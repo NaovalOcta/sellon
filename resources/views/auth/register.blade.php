@@ -62,6 +62,14 @@
         <button type="submit" class="btn btn-primary w-full">Register</button>
       </form>
 
+      {{-- Info verifikasi email --}}
+      <div class="flex items-start gap-x-2 bg-teal-50 border border-teal-200 rounded-lg px-4 py-3 mt-4">
+        <i class="fa-solid fa-envelope-circle-check text-brand-accent text-sm mt-0.5 flex-shrink-0"></i>
+        <p class="text-xs text-teal-700">
+          Setelah mendaftar, <strong>link verifikasi</strong> akan dikirim ke email kampus Anda. Akun baru dapat diaktifkan setelah verifikasi selesai.
+        </p>
+      </div>
+
       <p class="text-center text-sm text-brand-muted mt-6">
         Already have an account? <a href="{{ route('login') }}" wire:navigate
           class="text-brand-accent font-medium inline-block hover:underline">Login here</a>

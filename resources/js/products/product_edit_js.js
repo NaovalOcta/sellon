@@ -25,19 +25,24 @@ $(document).ready(function () {
     $('#err-condition').hide();
   });
 
+  const maxImages = 5;
+
+  window.updateAddButtonVisibility = function () {
+    const currentImages = $('.existing-image').length + $('.new-image').length;
+    if (currentImages >= maxImages) {
+      $('#add-image-button').hide();
+    } else {
+      $('#add-image-button').css('display', 'flex');
+    }
+  };
+
+  // Jalankan saat halaman pertama load
+  if ($('#add-image-button').length) {
+    window.updateAddButtonVisibility();
+  }
+
+  // Jalankan juga setiap kali Livewire SPA navigasi (back/forward)
   document.addEventListener('livewire:navigated', function () {
-    const maxImages = 5;
-    let currentImages = $('.existing-image').length + $('.new-image').length;
-
-    window.updateAddButtonVisibility = function () {
-      currentImages = $('.existing-image').length + $('.new-image').length;
-      if (currentImages >= maxImages) {
-        $('#add-image-button').hide();
-      } else {
-        $('#add-image-button').css('display', 'flex');
-      }
-    };
-
     if ($('#add-image-button').length) {
       window.updateAddButtonVisibility();
     }

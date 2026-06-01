@@ -28,6 +28,7 @@
         <div id="toast-container"></div>
 
         @include('partials._nav')
+        @include('partials._email_verification_banner')
         @yield('content')
         @include('partials._footer')
     </div>

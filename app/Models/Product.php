@@ -69,6 +69,7 @@ class Product extends Model
              return 'https://ui-avatars.com/api/?name=' . urlencode($this->name ?? 'Product') . '&background=F1F5F9&color=94A3B8&size=640';
         }
 
-        return asset('uploads/' . $this->image_url);
+        // Gunakan domain aktif dari request saat ini (tidak terikat APP_URL)
+        return request()->root() . '/uploads/' . $this->image_url;
     }
 }
