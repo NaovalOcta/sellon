@@ -102,6 +102,11 @@ class ProductController extends Controller
 
     $validation['condition'] = $validation['condition'] ?? '-';
 
+    // For 'Service' category, stock is not applicable — set to null explicitly
+    if ($validation['category'] === 'Service') {
+      $validation['stock'] = null;
+    }
+
     if ($request->hasFile('image_urls') && count($request->file('image_urls')) > 0) {
       $files = $request->file('image_urls');
       $validation['image_url'] = $files[0]->store('products', 'public');
@@ -160,6 +165,11 @@ class ProductController extends Controller
     ]);
 
     $validation['condition'] = $validation['condition'] ?? '-';
+
+    // For 'Service' category, stock is not applicable — set to null explicitly
+    if ($validation['category'] === 'Service') {
+      $validation['stock'] = null;
+    }
 
     $product->update([
       'name' => $validation['name'],

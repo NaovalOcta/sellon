@@ -8,19 +8,19 @@
 VARIABLE:
 $products = Array variable about all the data inside 'Product' table
 --}}
-<main id="product-catalog-container" class="grow max-w-7xl mx-auto xl:mx-50 px-4 sm:px-6 lg:px-8 py-8 min-h-screen bg-brand-secondary">
+<main id="product-catalog-container" class="grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-screen bg-brand-secondary">
   <div class="mt-6 mb-8">
-    <h1 class="mb-2 text-4xl font-serif scale-y-125 font-bold text-brand-main">Shop</h2>
-    <p class="text-brand-muted">Discover products and services from your campus community</p>
+    <h1 class="mb-2 text-3xl sm:text-4xl font-serif scale-y-125 font-bold text-brand-main">Shop</h1>
+    <p class="text-brand-muted text-sm sm:text-base">Discover products and services from your campus community</p>
   </div>
   
-  <div class="flex gap-2 mb-8"> 
+  <div class="flex flex-col sm:flex-row gap-2 mb-8"> 
     <div class="relative grow">
       <input id="search-bar" type="text" placeholder="Find Book, Food, or Service..." class="input-field pl-4 pr-12 border-slate-200 w-full">
     </div>
 
-    <div class="flex items-center gap-2">
-      <select class="input-field h-10! py-1! text-sm cursor-pointer min-w-[160px]" id="sort-select">
+    <div class="flex items-center gap-2 w-full sm:w-auto">
+      <select class="input-field h-10! py-1! text-sm cursor-pointer min-w-[160px] w-full" id="sort-select">
         <option value="Newest">Newest</option>
         <option value="Price: Low → High">Price: Low → High</option>
         <option value="Price: High → Low">Price: High → Low</option>

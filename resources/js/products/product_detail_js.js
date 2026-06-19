@@ -1,4 +1,4 @@
-function handleWhatsAppClick(phone, productName, price) {
+window.handleWhatsAppClick = function(phone, productName, price) {
   if (!phone || phone.trim() === '' || phone === '-' || phone.length < 9) {
     if (typeof window.triggerToast === 'function') {
       window.triggerToast('toast_error', 'Seller WhatsApp contact is invalid or unavailable.');

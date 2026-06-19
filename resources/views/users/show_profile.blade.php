@@ -9,7 +9,7 @@ VARIABLE:
 $user = Data user yang sedang login
 $products = Produk-produk milik user tersebut
 --}}
-<main class="max-w-5xl mx-auto xl:mx-50 px-4 sm:px-6 lg:px-8 py-8 min-h-[73vh] bg-brand-secondary">
+<main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-[73vh] bg-brand-secondary">
   {{-- Profile Card --}}
   <div class="fade-in-effect bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 mb-8">
     <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
@@ -25,7 +25,7 @@ $products = Produk-produk milik user tersebut
           </div>
           @auth
             @if(auth()->id() === $user->id)
-              <a href="{{ route('users.edit_profile', ['id' => $user->id]) }}" wire:navigate class="btn btn-primary py-2! px-4! text-sm gap-1">
+              <a href="{{ route('users.edit_profile', ['id' => $user->id]) }}" class="btn btn-primary py-2! px-4! text-sm gap-1">
                 <i class="fa-solid fa-pen"></i> Edit
               </a>
             @endif
@@ -72,7 +72,7 @@ $products = Produk-produk milik user tersebut
     </h2>
     @auth
       @if ($user->id === auth()->user()->id)
-        <a href="{{ route('product.create') }}" wire:navigate class="btn btn-primary py-2! px-4! text-sm gap-1">
+        <a href="{{ route('product.create') }}" class="btn btn-primary py-2! px-4! text-sm gap-1">
           <i class="fa-solid fa-plus"></i> Add New Product
         </a>
       @endif
@@ -84,7 +84,7 @@ $products = Produk-produk milik user tersebut
       <i class="fa-solid fa-heart-crack text-6xl text-slate-200 mb-4"></i>
       <label class="text-stone-500 font-medium">No products yet</label>
       <p class="text-sm text-stone-400 mt-2">Start by adding products to sell.</p>
-      <a href="{{ route('product.create') }}" wire:navigate class="btn btn-primary mt-6">Add Product</a>
+      <a href="{{ route('product.create') }}" class="btn btn-primary mt-6">Add Product</a>
     </div>
   @else
     @include('partials._square_product_card', ['products' => $products])

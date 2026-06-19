@@ -28,7 +28,7 @@ $products = Array variable about all the data inside 'Product' table
           </div>
         </div>
         <div class="p-4">
-          <a href="{{ route('product.show', ['id' => $product->id]) }}" wire:navigate>
+          <a href="{{ route('product.show', ['id' => $product->id]) }}">
             <h3 class=" text-slate-800 truncate mb-1 text-lg font-bold">{{ $product->name }}</h3>
             <p class="font-display text-brand-muted text-sm mb-6">Rp. {{ number_format($product->price, 0, ',', '.') }}</p>
             <div class="flex items-center gap-2 mb-4">

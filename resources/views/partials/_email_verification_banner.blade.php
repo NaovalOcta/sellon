@@ -6,7 +6,7 @@
 @auth
   @if(!Auth::user()->hasVerifiedEmail())
     <div id="email-verification-banner" class="bg-amber-400 text-amber-900 px-4 py-2.5">
-      <div class="max-w-7xl mx-auto xl:mx-50 flex flex-col sm:flex-row items-center justify-between gap-y-2 gap-x-4">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-y-2 gap-x-4">
         <div class="flex items-center gap-x-2 text-sm font-medium">
           <i class="fa-solid fa-circle-exclamation flex-shrink-0"></i>
           <span>
@@ -14,7 +14,7 @@
           </span>
         </div>
         <div class="flex items-center gap-x-3 flex-shrink-0">
-          <a href="{{ route('verification.notice') }}" wire:navigate
+          <a href="{{ route('verification.notice') }}"
             class="text-xs font-semibold bg-amber-900 text-amber-50 px-3 py-1.5 rounded-lg hover:bg-amber-800 transition-colors duration-200 whitespace-nowrap">
             <i class="fa-solid fa-envelope mr-1"></i> Verifikasi Sekarang
           </a>

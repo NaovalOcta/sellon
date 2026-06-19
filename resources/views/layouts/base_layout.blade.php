@@ -12,15 +12,42 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    {{-- =====================================================
+         MAZE HEATMAP & USER TESTING SNIPPET
+         Ganti 'YOUR_MAZE_API_KEY' dengan API key dari:
+         app.maze.co → Project → Install Snippet
+         ===================================================== --}}
+    <script>
+        (function(m, a, z, e) {
+            var s, t, u, v;
+            try {
+                t = m.sessionStorage.getItem('maze-us');
+            } catch (err) {}
+
+            if (!t) {
+                t = new Date().getTime();
+                try {
+                    m.sessionStorage.setItem('maze-us', t);
+                } catch (err) {}
+            }
+
+            u = document.currentScript || (function() {
+                var w = document.getElementsByTagName('script');
+                return w[w.length - 1];
+            })();
+            v = u && u.nonce;
+
+            s = a.createElement('script');
+            s.src = z + '?apiKey=' + e;
+            s.async = true;
+            if (v) s.setAttribute('nonce', v);
+            a.getElementsByTagName('head')[0].appendChild(s);
+            m.mazeUniversalSnippetApiKey = e;
+        })(window, document, 'https://snippet.maze.co/maze-universal-loader.js', 'f39b0f2f-0ecd-46bf-8c31-3d69509718d7');
+    </script>
+
     @livewireStyles
-    @vite([
-        'resources/css/app.css',
-        'resources/js/app.js',
-        'resources/js/utils.js',
-        'resources/js/layouts/base_js.js',
-        'resources/js/products/product_feature_js.js',
-        'resources/js/products/product_catalog_js.js',
-    ])
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/utils.js', 'resources/js/layouts/base_js.js', 'resources/js/products/product_feature_js.js', 'resources/js/products/product_catalog_js.js'])
 </head>
 
 <body>
@@ -51,8 +78,20 @@
         // sehingga notifikasi muncul berulang kali saat back/forward.
         if (!window._livewireNavigatedToastRegistered) {
             window._livewireNavigatedToastRegistered = true;
-            document.addEventListener('livewire:navigated', function () {
+            document.addEventListener('livewire:navigated', function() {
                 setTimeout(showSessionToasts, 50);
+
+                // ── Maze SPA Support ──────────────────────────────────────────
+                // Livewire menggunakan soft-navigation (tanpa full page reload),
+                // sehingga Maze tidak otomatis mendeteksi perpindahan halaman.
+                // Kita beritahu Maze secara manual setiap kali halaman berganti
+                // agar path steps pada Path-based heatmap terdeteksi dengan benar.
+                setTimeout(function() {
+                    if (typeof window.maze === 'function') {
+                        window.maze('pageview');
+                    }
+                }, 100);
+                // ─────────────────────────────────────────────────────────────
             });
         }
     </script>

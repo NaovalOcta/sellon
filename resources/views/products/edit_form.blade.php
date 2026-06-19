@@ -8,7 +8,7 @@
 VARIABLE:
 $product = Variable about the product being edited
 --}}
-<main class="fade-in-effect w-auto mx-auto xl:mx-50 px-4 sm:px-6 py-8 min-h-[73vh] flex justify-center bg-brand-secondary">
+<main class="fade-in-effect w-auto mx-auto px-4 sm:px-6 py-8 min-h-[73vh] flex justify-center bg-brand-secondary">
   <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 w-full max-w-3xl">
     <div class="mb-8 border-b border-slate-100 pb-4">
       <h1 class="text-2xl font-display font-bold text-brand-main">Edit Product</h1>
@@ -127,7 +127,7 @@ $product = Variable about the product being edited
       </div>
 
       <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 border-t border-slate-100">
-        <a href="{{ route('product.show', ['id' => $product->id]) }}" wire:navigate class="btn btn-secondary w-full sm:w-auto text-center">Cancel</a>
+        <a href="{{ route('product.show', ['id' => $product->id]) }}" class="btn btn-secondary w-full sm:w-auto text-center">Cancel</a>
         <button type="submit" class="btn btn-primary w-full sm:w-auto gap-2">
           Save Changes
         </button>

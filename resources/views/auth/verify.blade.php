@@ -91,7 +91,7 @@
     {{-- Link kembali ke home --}}
     <p class="text-center text-xs text-slate-400 mt-5">
       Ingin tetap browsing?
-      <a href="{{ route('home') }}" wire:navigate class="text-brand-accent hover:underline font-medium">Kembali ke Beranda</a>
+      <a href="{{ route('home') }}" class="text-brand-accent hover:underline font-medium">Kembali ke Beranda</a>
     </p>
 
   </div>

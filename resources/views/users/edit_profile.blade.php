@@ -8,7 +8,7 @@
 VARIABLE:
 $user = Array variable about all the data inside 'User' table
 --}}
-<main class="fade-in-effect w-auto mx-auto xl:mx-50 px-4 sm:px-6 py-8 min-h-[73vh] flex justify-center bg-brand-secondary">
+<main class="fade-in-effect w-auto mx-auto px-4 sm:px-6 py-8 min-h-[73vh] flex justify-center bg-brand-secondary">
   <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 w-full max-w-3xl">
     <div class="mb-8 border-b border-slate-100 pb-4">
       <h1 class="text-2xl font-display font-bold text-brand-main">Update Profile</h1>

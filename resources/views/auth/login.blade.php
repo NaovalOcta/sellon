@@ -4,13 +4,13 @@
 
 @section('content')  
 
-<main class="fade-in-effect min-h-[73vh] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-30">
-  <div id="login-view" class="view-section h-[60vh] flex flex-row justify-center items-center">
-    <div class="h-full w-1/5 p-10 gap-y-5 flex flex-col justify-center items-center rounded-l-xl bg-brand-main ">
+<main class="fade-in-effect min-h-[73vh] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 flex justify-center items-center">
+  <div id="login-view" class="view-section w-full max-w-md md:max-w-3xl flex flex-col md:flex-row justify-center items-stretch">
+    <div class="w-full md:w-2/5 p-8 md:p-10 gap-y-5 flex flex-col justify-center items-center rounded-t-2xl md:rounded-tr-none md:rounded-l-2xl bg-brand-main text-center">
       <h2 class="text-3xl font-display font-bold text-white">Welcome Back</h2>
-      <p class="text-brand-muted mb-6">Please login using your NIM and password.</p>
+      <p class="text-brand-muted mb-2 text-sm">Please login using your NIM and password.</p>
     </div>
-    <div class="h-full w-1/3 p-10 rounded-r-2xl border-stone-300 border-2 bg-stone-100">
+    <div class="w-full md:w-3/5 p-8 md:p-10 rounded-b-2xl md:rounded-bl-none md:rounded-r-2xl border-stone-300 border-2 border-t-0 md:border-t-2 md:border-l-0 bg-stone-100">
       <form id="form-login" action="{{ route('login_post') }}" method="POST">
         @csrf
         <div id="email-form" class="mb-4">
@@ -27,7 +27,7 @@
       </form>
 
       <p class="text-center text-sm text-brand-muted mt-6">
-        Don't have an account? <a href="{{ route('register') }}" wire:navigate
+        Don't have an account? <a href="{{ route('register') }}"
           class="text-brand-accent font-medium inline-block hover:underline">Register here</a>
       </p>
     </div>

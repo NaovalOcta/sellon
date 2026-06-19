@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->decimal('price', 15, 2);
-            $table->integer('stock')->default(0); // Kolom baru ditambahkan di sini
+            $table->integer('stock')->nullable()->default(null); // nullable untuk mendukung kategori Service
             $table->string('category');
             $table->string('condition');
             $table->string('image_url')->nullable(); // Disarankan nullable jika tidak wajib
