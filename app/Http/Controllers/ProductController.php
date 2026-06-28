@@ -18,7 +18,27 @@ class ProductController extends Controller
   public function index($view_type = 'home') {    
     $products = Product::orderBy("id", "desc")->paginate(5);
 
-    return view($view_type, compact('products'));
+    $promotedProducts = [];
+    $plans = [];
+    $packages = [];
+    $activeSubscription = null;
+    $pendingOrder = null;
+
+    if ($view_type === 'home') {
+        $promotedProducts = app(\App\Services\PromotionRotationService::class)->getRotatedPromotions();
+        $plans = \App\Models\SubscriptionPlan::all();
+        $packages = \App\Models\PromotionPackage::all();
+        
+        $user = Auth::user();
+        if ($user) {
+            $activeSubscription = $user->userSubscription;
+            $pendingOrder = $user->subscriptionOrders()
+                ->where('status', 'pending')
+                ->first();
+        }
+    }
+
+    return view($view_type, compact('products', 'promotedProducts', 'plans', 'packages', 'activeSubscription', 'pendingOrder'));
   }
 
   private function getCategoryCounts($baseQuery) {
@@ -64,7 +84,25 @@ class ProductController extends Controller
       $query = $this->applySort($query, $request);
       
       $products = $query->paginate(20)->withQueryString();
-      return view('products.show_catalog', compact('products', 'categoryCounts'));
+
+      // Retrieve and filter promoted products for the first page
+      $promotedProducts = collect();
+      if ($request->query('page', 1) == 1) {
+          $allPromoted = app(\App\Services\PromotionRotationService::class)->getRotatedPromotions();
+          
+          if ($request->has('filter') && $request->filter != 'All') {
+              $allPromoted = $allPromoted->where('category', $request->filter);
+          }
+          if ($request->has('search') && $request->search != '') {
+              $search = strtolower($request->search);
+              $allPromoted = $allPromoted->filter(function($prod) use ($search) {
+                  return str_contains(strtolower($prod->name), $search);
+              });
+          }
+          $promotedProducts = $allPromoted->take(3)->values();
+      }
+
+      return view('products.show_catalog', compact('products', 'categoryCounts', 'promotedProducts'));
   }
 
   // Show current User product to the catalog view
@@ -86,7 +124,14 @@ class ProductController extends Controller
 
   // Add new Product based on the User added Product when the Product is being submitted
   public function store(Request $request) {
-    $request->merge(['user_id' => Auth::id()]);
+    $user = Auth::user();
+    $productCount = $user->products()->count();
+    $limit = $user->getProductLimit();
+    if ($productCount >= $limit) {
+        return back()->withErrors(['limit' => 'Batas kapasitas produk tercapai (maksimal ' . $limit . ' produk). Hapus produk lama atau upgrade ke Premium Seller.'])->withInput();
+    }
+
+    $request->merge(['user_id' => $user->id]);
 
     $validation = $request->validate([
       'name' => ['required', 'string', 'max:255'],
