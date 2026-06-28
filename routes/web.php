@@ -5,6 +5,10 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\VerificationController;
+use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\PromotionController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\StatsController;
 
 // ---------------------------------|| AUTH ROUTES ||---------------------------------
 // [ GET ] landing page (home)
@@ -29,9 +33,9 @@ Route::post('/register_post', [UserController::class, 'register'])->name('regist
 Route::middleware('auth')->group(function () {
   // [ GET ] halaman instruksi verifikasi email
   Route::get('/verify', [VerificationController::class, 'showNotice'])->name('verification.notice');
-  // [ GET ] callback link verifikasi dari email (harus signed URL)
-  Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
-    ->middleware('signed')->name('verification.verify');
+  // [ POST ] verifikasi OTP dari email
+  Route::post('/email/verify', [VerificationController::class, 'verify'])
+    ->name('verification.verify');
   // [ POST ] kirim ulang email verifikasi (throttle: 1x per menit)
   Route::post('/verify/resend', [VerificationController::class, 'resend'])
     ->middleware('throttle:1,1')->name('verification.send');
@@ -77,4 +81,43 @@ Route::get('/users/my-products', [ProductController::class, 'myProducts'])->name
 Route::post('/favorite/toggle/{product_id}', [FavoriteController::class, 'toggle'])->name('favorite.toggle')->whereNumber('product_id')->middleware(['auth', 'verified']);
 // [ GET ] my favorites (PROTECTED: login + email verified)
 Route::get('/my-favorites', [FavoriteController::class, 'index'])->name('favorite.index')->middleware(['auth', 'verified']);
+
+// PREMIUM SELLER ROUTES
+Route::get('/premium', [SubscriptionController::class, 'index'])->name('premium.index');
+Route::post('/premium/subscribe', [SubscriptionController::class, 'subscribe'])
+    ->middleware(['auth', 'verified'])->name('premium.subscribe');
+Route::get('/premium/confirm/{id}', [SubscriptionController::class, 'confirmPayment'])
+    ->middleware(['auth', 'verified'])->name('premium.confirm');           // id = subscription_order_id
+Route::post('/premium/confirm/{id}', [SubscriptionController::class, 'submitPayment'])
+    ->middleware(['auth', 'verified'])->name('premium.submit_payment');
+Route::post('/premium/cancel/{id}', [SubscriptionController::class, 'cancel'])
+    ->middleware(['auth', 'verified'])->name('premium.cancel');            // id = subscription_order_id
+
+// PROMOTED LISTING ROUTES
+Route::get('/promote', [PromotionController::class, 'index'])->name('promote.index');
+Route::get('/promote/select', [PromotionController::class, 'create'])
+    ->middleware(['auth', 'verified'])->name('promote.create');
+Route::post('/promote/order', [PromotionController::class, 'store'])
+    ->middleware(['auth', 'verified'])->name('promote.store');
+Route::get('/promote/confirm/{id}', [PromotionController::class, 'confirmPayment'])
+    ->middleware(['auth', 'verified'])->name('promote.confirm');           // id = promotion_order_id
+Route::post('/promote/confirm/{id}', [PromotionController::class, 'submitPayment'])
+    ->middleware(['auth', 'verified'])->name('promote.submit_payment');
+Route::get('/promote/my-promotions', [PromotionController::class, 'myPromotions'])
+    ->middleware(['auth', 'verified'])->name('promote.my');
+Route::post('/promote/cancel/{id}', [PromotionController::class, 'cancel'])
+    ->middleware(['auth', 'verified'])->name('promote.cancel');            // id = promotion_order_id
+
+// STATS ROUTES (Premium Only)
+Route::get('/stats', [StatsController::class, 'index'])
+    ->middleware(['auth', 'verified', 'premium'])->name('stats.index');
+
+// ADMIN ROUTES
+Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
+    Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/payments', [AdminController::class, 'pendingPayments'])->name('admin.payments');
+    Route::post('/payments/{id}/approve', [AdminController::class, 'approvePayment'])->name('admin.payments.approve');
+    Route::post('/payments/{id}/reject', [AdminController::class, 'rejectPayment'])->name('admin.payments.reject');
+    Route::get('/payments/history', [AdminController::class, 'paymentHistory'])->name('admin.payments.history');
+});
 
