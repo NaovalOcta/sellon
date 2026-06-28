@@ -27,6 +27,8 @@ class User extends Authenticatable implements MustVerifyEmail
       'whatsapp_no',
       'role',
       'password',
+      'email_verify_otp',
+      'email_verify_otp_expires_at',
     ];
 
     /**
@@ -48,8 +50,23 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return [
             'email_verified_at' => 'datetime',
+            'email_verify_otp_expires_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Generate a 6-digit OTP and set its expiration time.
+     */
+    public function generateEmailVerificationOtp(): string
+    {
+        $otp = sprintf("%06d", mt_rand(1, 999999));
+        $this->forceFill([
+            'email_verify_otp' => $otp,
+            'email_verify_otp_expires_at' => now()->addMinutes(60),
+        ])->save();
+
+        return $otp;
     }
 
     /**
@@ -58,7 +75,8 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function sendEmailVerificationNotification(): void
     {
-        $this->notify(new VerifyEmailNotification());
+        $otp = $this->generateEmailVerificationOtp();
+        $this->notify(new VerifyEmailNotification($otp));
     }
 
     /**
@@ -77,5 +95,27 @@ class User extends Authenticatable implements MustVerifyEmail
     public function favorites()
     {
         return $this->hasMany(Favorite::class);
+    }
+
+    public function subscriptionOrders()
+    {
+        return $this->hasMany(SubscriptionOrder::class);
+    }
+
+    public function userSubscription()
+    {
+        return $this->hasOne(UserSubscription::class)
+            ->where('status', 'active')
+            ->where('expires_at', '>', now());
+    }
+
+    public function isPremium(): bool
+    {
+        return $this->userSubscription()->exists();
+    }
+
+    public function getProductLimit(): int
+    {
+        return $this->isPremium() ? 100 : 20;
     }
 }

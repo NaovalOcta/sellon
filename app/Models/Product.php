@@ -72,4 +72,26 @@ class Product extends Model
         // Gunakan domain aktif dari request saat ini (tidak terikat APP_URL)
         return request()->root() . '/uploads/' . $this->image_url;
     }
+
+    public function promotionOrders()
+    {
+        return $this->hasMany(PromotionOrder::class);
+    }
+
+    public function productPromotion()
+    {
+        return $this->hasOne(ProductPromotion::class)
+            ->where('status', 'active')
+            ->where('expires_at', '>', now());
+    }
+
+    public function isPromoted(): bool
+    {
+        return $this->productPromotion()->exists();
+    }
+
+    public function storeVisits()
+    {
+        return $this->hasMany(StoreVisit::class);
+    }
 }
