@@ -49,7 +49,10 @@ $products = Array variable about all the data inside 'Product' table
     </div>
   </div>
 
-  @include('partials._square_product_card', ['products' => $products])
+  @include('partials._square_product_card', [
+      'products' => $products,
+      'promotedProducts' => $promotedProducts ?? collect()
+  ])
 
   <div class="mt-8">
     {{ $products->links() }}

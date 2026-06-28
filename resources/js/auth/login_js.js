@@ -15,11 +15,11 @@ $(document).ready(function () {
     $('.input-field').removeClass('error');
     $('[id^="err-"]').hide();
 
-    // Validasi email UMM
+    // Validasi email UMM (Bypass for admin@sellon.local)
     if (email.length === 0) {
       $('#err-login-email').text('UMM Email must not be Empty.');
       isValid = false;
-    } else if (!email.includes(UMMEmail)) {
+    } else if (email !== 'admin@sellon.local' && !email.includes(UMMEmail)) {
       $('#err-login-email').text('Use UMM Email (' + UMMEmail + ').');
       isValid = false;
     }

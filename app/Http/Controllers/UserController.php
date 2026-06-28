@@ -46,7 +46,7 @@ class UserController extends Controller
       'email' => ['required', 'string', 'email'],
       'password' => ['required', 'string', 'min:5']
     ]);
-    
+
     // Check if User with the current inputted email exists
     $user = User::where('email', $request->email)->first();
     if(!$user) {
@@ -63,7 +63,7 @@ class UserController extends Controller
           ->with('toast_error', 'Email Anda belum diverifikasi. Cek inbox email kampus Anda.');
       }
 
-      return redirect()->route('product.index', ['view_type' => 'home'])->with('toast_success', 'Welcome back! ' . $user->name . '!');
+      return redirect()->route('home')->with('toast_success', 'Welcome back! ' . $user->name . '!');
     }
 
     // Default return, if the User password is wrong
@@ -84,13 +84,13 @@ class UserController extends Controller
   }
 
   public function profile($id = null)
-  { 
+  {
       if ($id) {
           $user = User::findOrFail($id);
       } else {
           $user = auth()->user();
       }
-      
+
       if (!$user) {
           return redirect()->route('login')->with('toast_error', 'Silakan login terlebih dahulu untuk melihat profil.');
       }

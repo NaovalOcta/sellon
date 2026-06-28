@@ -1,7 +1,6 @@
 {{-- 
 VARIABLE:
 $products = Array variable about all the data inside 'Product' table
-$
 --}}
 
 @if($products->isEmpty())
@@ -11,13 +10,23 @@ $
 @else
   <div class="fade-in-effect gap-5 flex flex-col items-start justify-start text-start w-full">
     @foreach($products as $product)
-      <div class="rectangle-product-card w-full p-3 sm:p-4 flex items-center justify-between min-w-0 gap-x-4" data-category="{{ $product->category }}" data-price="{{ $product->price }}">
+      <div class="rectangle-product-card w-full p-3 sm:p-4 flex items-center justify-between min-w-0 gap-x-4 {{ $product->isPromoted() ? 'border-2 border-amber-300 bg-amber-50/5' : '' }}" data-category="{{ $product->category }}" data-price="{{ $product->price }}">
         <a href="{{ route('product.show', ['id' => $product->id]) }}" class="gap-x-3 sm:gap-x-8 flex items-center min-w-0 grow">
           <img src="{{ $product->display_image }}" alt="{{ $product->name }}" class="w-16 h-16 sm:w-22 sm:h-22 rounded-2xl object-cover transition duration-300 brightness-90 hover:brightness-80 shrink-0">
           <div class="flex flex-col items-start justify-evenly min-w-0 w-full">
-            <span class="bg-brand-accent text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 sm:py-1 rounded mb-1">
-              {{ $product->category }}
-            </span>
+            <div class="flex items-center gap-1.5 mb-1 flex-wrap">
+              <span class="bg-brand-accent text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 sm:py-1 rounded">
+                {{ $product->category }}
+              </span>
+              @if($product->isPromoted())
+                <span class="bg-amber-500 text-white text-[9px] sm:text-[10px] font-extrabold px-1.5 py-0.5 rounded flex items-center gap-0.5">
+                  🔥 Sponsor
+                </span>
+              @endif
+              @if($product->user->isPremium())
+                <span class="text-[9px] bg-amber-500 text-white px-1.5 py-0.5 rounded font-extrabold flex items-center gap-0.5">👑 Premium</span>
+              @endif
+            </div>
             <h3 class="text-slate-800 truncate text-sm sm:text-lg font-bold w-full">{{ $product->name }}</h3>
             <p class="font-display text-brand-muted text-xs sm:text-sm">Rp. {{ number_format($product->price, 0, ',', '.') }}</p>
           </div>

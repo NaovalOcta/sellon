@@ -15,6 +15,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call([
+            SubscriptionPlanSeeder::class,
+            PromotionPackageSeeder::class,
+            AdminUserSeeder::class,
+        ]);
+
         User::factory(10)->create()->each(function ($user) {
             $products = \App\Models\Product::factory(10)->create([
                 'user_id' => $user->id,

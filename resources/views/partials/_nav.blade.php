@@ -15,8 +15,15 @@
           class="nav-link py-1 {{ request()->routeIs('home') ? 'border-b border-white -translate-y-1' : 'border-transparent' }} transition-all duration-300 cursor-pointer hover:border-b hover:border-white hover:-translate-y-1">Home</a>
         <a href="{{ route('product.catalog') }}"
           class="nav-link py-1 {{ request()->routeIs('product.catalog') ? 'border-b border-white -translate-y-1' : 'border-transparent' }} transition-all duration-300 cursor-pointer hover:border-b hover:border-white hover:-translate-y-1">Shop</a>
-        <a href="{{ route('users.my-products') }}"
-          class="nav-link py-1 {{ request()->routeIs('users.my-products') ? 'border-b border-white -translate-y-1' : 'border-transparent' }} transition-all duration-300 cursor-pointer hover:border-b hover:border-white hover:-translate-y-1">Dashboard</a>
+        @auth
+          @if(Auth::user()->role === 'admin')
+            <a href="{{ route('admin.dashboard') }}"
+              class="nav-link py-1 {{ request()->routeIs('admin.dashboard') ? 'border-b border-white -translate-y-1' : 'border-transparent' }} transition-all duration-300 cursor-pointer hover:border-b hover:border-white hover:-translate-y-1">Dashboard</a>
+          @else
+            <a href="{{ route('users.my-products') }}"
+              class="nav-link py-1 {{ request()->routeIs('users.my-products') ? 'border-b border-white -translate-y-1' : 'border-transparent' }} transition-all duration-300 cursor-pointer hover:border-b hover:border-white hover:-translate-y-1">Dashboard</a>
+          @endif
+        @endauth
       </div>
 
       {{-- Desktop Auth Section --}}
@@ -29,22 +36,64 @@
                 <div class="px-3 py-3 mb-1 border-b border-stone-100 flex items-center gap-x-3 bg-stone-50 rounded-t-md">
                   <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ urlencode(Auth::user()->name) }}" alt="Avatar" class="w-10 h-10 object-cover rounded-full">
                   <div class="flex flex-col overflow-hidden">
-                    <span class="text-sm font-bold truncate">{{ Auth::user()->name }}</span>
+                    <span class="text-sm font-bold truncate flex items-center gap-1">
+                      {{ Auth::user()->name }}
+                      @if(Auth::user()->isPremium())
+                        <span class="text-[9px] bg-amber-500 text-white px-1.5 py-0.5 rounded font-extrabold">👑 Premium</span>
+                      @endif
+                    </span>
                     <span class="text-xs text-stone-500 truncate">{{ strlen(Auth::user()->email) > 25 ? substr(Auth::user()->email, 0, 25) . '...' : Auth::user()->email }}</span>
                   </div>
                 </div>
-                <label class="px-3 pt-2 pb-1 text-xs font-bold text-stone-400 uppercase tracking-wider">Product Dashboard</label>
-                <a href="{{ route('users.my-products') }}" class="nav-link flex items-center gap-x-3 text-sm hover:text-brand-accent hover:bg-teal-50 px-3 py-2 rounded-md transition-colors">
-                  <i class="fa-solid fa-box-open w-5 text-center text-brand-accent"></i> My Products
-                </a>
-                <a href="{{ route('favorite.index') }}" class="nav-link flex items-center gap-x-3 text-sm hover:text-brand-accent hover:bg-teal-50 px-3 py-2 rounded-md transition-colors">
-                  <i class="fa-solid fa-heart w-5 text-center text-red-500"></i> My Favorites
-                </a>
-                <hr class="border-stone-100 my-1">
-                <label class="px-3 pt-2 pb-1 text-xs font-bold text-stone-400 uppercase tracking-wider">Account Settings</label>
-                <a href="{{ route('users.profile') }}" class="nav-link flex items-center gap-x-3 text-sm hover:text-brand-accent hover:bg-stone-50 px-3 py-2 rounded-md transition-colors">
-                  <i class="fa-solid fa-gear w-5 text-center text-stone-500"></i> My Profile
-                </a>
+
+                @if(Auth::user()->role === 'admin')
+                  <label class="px-3 pt-2 pb-1 text-xs font-bold text-stone-400 uppercase tracking-wider">Admin Panel</label>
+                  <a href="{{ route('admin.dashboard') }}" class="nav-link flex items-center gap-x-3 text-sm hover:text-brand-accent hover:bg-stone-50 px-3 py-2 rounded-md transition-colors">
+                    <i class="fa-solid fa-gauge w-5 text-center text-slate-500"></i> Dashboard
+                  </a>
+                  <a href="{{ route('admin.payments') }}" class="nav-link flex items-center gap-x-3 text-sm hover:text-brand-accent hover:bg-stone-50 px-3 py-2 rounded-md transition-colors justify-between">
+                    <span class="flex items-center gap-x-3">
+                      <i class="fa-solid fa-file-invoice-dollar w-5 text-center text-amber-500"></i> Payment Confirmation
+                    </span>
+                    @if(($pendingPaymentsCount ?? 0) > 0)
+                      <span class="bg-amber-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ $pendingPaymentsCount }}</span>
+                    @endif
+                  </a>
+                  <a href="{{ route('admin.payments.history') }}" class="nav-link flex items-center gap-x-3 text-sm hover:text-brand-accent hover:bg-stone-50 px-3 py-2 rounded-md transition-colors">
+                    <i class="fa-solid fa-history w-5 text-center text-slate-500"></i> Payment History
+                  </a>
+                  <hr class="border-stone-100 my-1">
+                  <label class="px-3 pt-2 pb-1 text-xs font-bold text-stone-400 uppercase tracking-wider">Account Settings</label>
+                  <a href="{{ route('users.profile') }}" class="nav-link flex items-center gap-x-3 text-sm hover:text-brand-accent hover:bg-stone-50 px-3 py-2 rounded-md transition-colors">
+                    <i class="fa-solid fa-user w-5 text-center text-stone-500"></i> Profile
+                  </a>
+                @else
+                  <label class="px-3 pt-2 pb-1 text-xs font-bold text-stone-400 uppercase tracking-wider">Product Dashboard</label>
+                  <a href="{{ route('users.my-products') }}" class="nav-link flex items-center gap-x-3 text-sm hover:text-brand-accent hover:bg-teal-50 px-3 py-2 rounded-md transition-colors">
+                    <i class="fa-solid fa-box-open w-5 text-center text-brand-accent"></i> My Products
+                  </a>
+                  <a href="{{ route('favorite.index') }}" class="nav-link flex items-center gap-x-3 text-sm hover:text-brand-accent hover:bg-teal-50 px-3 py-2 rounded-md transition-colors">
+                    <i class="fa-solid fa-heart w-5 text-center text-red-500"></i> My Favorites
+                  </a>
+                  <hr class="border-stone-100 my-1">
+                  <label class="px-3 pt-2 pb-1 text-xs font-bold text-stone-400 uppercase tracking-wider">Monetization</label>
+                  <a href="{{ route('premium.index') }}" class="nav-link flex items-center gap-x-3 text-sm hover:text-brand-accent hover:bg-teal-50 px-3 py-2 rounded-md transition-colors">
+                    <i class="fa-solid fa-crown w-5 text-center text-amber-500"></i> Premium Seller
+                  </a>
+                  <a href="{{ route('promote.index') }}" class="nav-link flex items-center gap-x-3 text-sm hover:text-brand-accent hover:bg-teal-50 px-3 py-2 rounded-md transition-colors">
+                    <i class="fa-solid fa-rectangle-ad w-5 text-center text-brand-accent"></i> Promote Listing
+                  </a>
+                  @if(Auth::user()->isPremium())
+                    <a href="{{ route('stats.index') }}" class="nav-link flex items-center gap-x-3 text-sm hover:text-brand-accent hover:bg-teal-50 px-3 py-2 rounded-md transition-colors">
+                      <i class="fa-solid fa-chart-line w-5 text-center text-brand-accent"></i> Store Statistics
+                    </a>
+                  @endif
+                  <hr class="border-stone-100 my-1">
+                  <label class="px-3 pt-2 pb-1 text-xs font-bold text-stone-400 uppercase tracking-wider">Account Settings</label>
+                  <a href="{{ route('users.profile') }}" class="nav-link flex items-center gap-x-3 text-sm hover:text-brand-accent hover:bg-stone-50 px-3 py-2 rounded-md transition-colors">
+                    <i class="fa-solid fa-user w-5 text-center text-stone-500"></i> Profile
+                  </a>
+                @endif
               </div>
             </div>
             @csrf
@@ -77,10 +126,20 @@
         class="nav-link flex items-center gap-x-3 px-4 py-3 rounded-lg {{ request()->routeIs('product.catalog') ? 'bg-white/10 font-semibold' : '' }} hover:bg-white/10 transition-colors">
         <i class="fa-solid fa-shop w-5 text-center text-brand-accent"></i> Shop
       </a>
-      <a href="{{ route('users.my-products') }}"
-        class="nav-link flex items-center gap-x-3 px-4 py-3 rounded-lg {{ request()->routeIs('users.my-products') ? 'bg-white/10 font-semibold' : '' }} hover:bg-white/10 transition-colors">
-        <i class="fa-solid fa-box-open w-5 text-center text-brand-accent"></i> Dashboard
-      </a>
+      @auth
+        @if(Auth::user()->role === 'admin')
+          <a href="{{ route('admin.dashboard') }}"
+            class="nav-link flex items-center gap-x-3 px-4 py-3 rounded-lg {{ request()->routeIs('admin.dashboard') ? 'bg-white/10 font-semibold' : '' }} hover:bg-white/10 transition-colors">
+            <i class="fa-solid fa-gauge w-5 text-center text-slate-400"></i> Dashboard
+          </a>
+        @else
+          <a href="{{ route('users.my-products') }}"
+            class="nav-link flex items-center gap-x-3 px-4 py-3 rounded-lg {{ request()->routeIs('users.my-products') ? 'bg-white/10 font-semibold' : '' }} hover:bg-white/10 transition-colors">
+            <i class="fa-solid fa-box-open w-5 text-center text-brand-accent"></i> Dashboard
+          </a>
+        @endif
+      @endauth
+
 
       <hr class="border-white/10 my-2">
 
@@ -96,12 +155,46 @@
             <span class="text-xs text-white/60 truncate block">{{ Auth::user()->email }}</span>
           </div>
         </div>
-        <a href="{{ route('favorite.index') }}" class="nav-link flex items-center gap-x-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
-          <i class="fa-solid fa-heart w-5 text-center text-red-400"></i> My Favorites
-        </a>
-        <a href="{{ route('users.profile') }}" class="nav-link flex items-center gap-x-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
-          <i class="fa-solid fa-gear w-5 text-center text-white/60"></i> My Profile
-        </a>
+        @if(Auth::user()->role === 'admin')
+          <a href="{{ route('admin.dashboard') }}" class="nav-link flex items-center gap-x-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
+            <i class="fa-solid fa-gauge w-5 text-center text-slate-400"></i> Dashboard
+          </a>
+          <a href="{{ route('admin.payments') }}" class="nav-link flex items-center gap-x-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors justify-between">
+            <span class="flex items-center gap-x-3">
+              <i class="fa-solid fa-file-invoice-dollar w-5 text-center text-amber-400"></i> Payment Confirmation
+            </span>
+            @if(($pendingPaymentsCount ?? 0) > 0)
+              <span class="bg-amber-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ $pendingPaymentsCount }}</span>
+            @endif
+          </a>
+          <a href="{{ route('admin.payments.history') }}" class="nav-link flex items-center gap-x-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
+            <i class="fa-solid fa-history w-5 text-center text-slate-400"></i> Payment History
+          </a>
+          <a href="{{ route('users.profile') }}" class="nav-link flex items-center gap-x-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
+            <i class="fa-solid fa-user w-5 text-center text-white/60"></i> Profile
+          </a>
+        @else
+          <a href="{{ route('users.my-products') }}" class="nav-link flex items-center gap-x-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
+            <i class="fa-solid fa-box-open w-5 text-center text-brand-accent"></i> My Products
+          </a>
+          <a href="{{ route('favorite.index') }}" class="nav-link flex items-center gap-x-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
+            <i class="fa-solid fa-heart w-5 text-center text-red-400"></i> My Favorites
+          </a>
+          <a href="{{ route('premium.index') }}" class="nav-link flex items-center gap-x-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
+            <i class="fa-solid fa-crown w-5 text-center text-amber-400"></i> Premium Seller
+          </a>
+          <a href="{{ route('promote.index') }}" class="nav-link flex items-center gap-x-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
+            <i class="fa-solid fa-rectangle-ad w-5 text-center text-brand-accent"></i> Promote Listing
+          </a>
+          @if(Auth::user()->isPremium())
+            <a href="{{ route('stats.index') }}" class="nav-link flex items-center gap-x-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
+              <i class="fa-solid fa-chart-line w-5 text-center text-brand-light-accent"></i> Store Statistics
+            </a>
+          @endif
+          <a href="{{ route('users.profile') }}" class="nav-link flex items-center gap-x-3 px-4 py-3 rounded-lg hover:bg-white/10 transition-colors">
+            <i class="fa-solid fa-user w-5 text-center text-white/60"></i> Profile
+          </a>
+        @endif
         <form action="{{ route('logout') }}" method="POST" class="mt-1">
           @csrf
           <button type="submit" class="w-full btn btn-danger">Sign Out</button>
